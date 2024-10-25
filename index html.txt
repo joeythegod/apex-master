@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+</head>
+<body>
+
+<h1 id="myHeadline">APEX circle master</h1>
+<canvas id="myCanvas" width="600" height="600">Your browser does not support the HTML canvas tag.</canvas>
+<button onclick="init()">Start over</button>
+
+<script>
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+var img = new Image();
+img.src = "https://i.ibb.co/9yPvSyL/mp-rr-desertlands-mu3.jpg";
+var r; // r is diameter
+var start_x; // starting center x
+var start_y; // starting center y
+var isClicked;
+
+function drawCircle(ctx, x, y, r) {
+	ctx.beginPath();
+    ctx.arc(x, y, r, 0, 2 * Math.PI);
+    ctx.stroke();
+}
+
+function getInnerCircle(x, y, r) {
+	r /= 2;
+    var isOverlap = true;
+    while (isOverlap) {
+    	_x = Math.floor(Math.random() * 2 * r) - r;
+        _y = Math.floor(Math.random() * 2 * r) - r;
+        if (_x * _x + _y * _y <= r * r) {
+        	isOverlap = false;
+        }
+    }
+    return [x + _x, y + _y, r];
+}
+
+function init() {
+	r = 200; // r is diameter
+    start_x = Math.random() * (600 - 2 * r) + r;
+    start_y = Math.random() * (600 - 2 * r) + r;
+    isClicked = false;
+	ctx.clearRect(0, 0, 600, 600);
+    ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, 600, 600);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "red";
+    
+    drawCircle(ctx, start_x, start_y, r);
+    [start_x, start_y, r] = getInnerCircle(start_x, start_y, r);
+    drawCircle(ctx, start_x, start_y, r);
+}
+
+img.onload = function() {
+	init();
+}
+
+c.addEventListener('click', function(event) {
+	if (!isClicked) {
+      let rect = c.getBoundingClientRect();
+      let click_x = event.clientX - rect.left;
+      let click_y = event.clientY - rect.top;
+
+      for (let i = 0; i < 3; i ++) {
+          [start_x, start_y, r] = getInnerCircle(start_x, start_y, r);
+          drawCircle(ctx, start_x, start_y, r);
+      }
+      ctx.strokeStyle = "yellow";
+      drawCircle(ctx, click_x, click_y, r);
+      isClicked = true;
+    }
+});
+
+</script> 
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
